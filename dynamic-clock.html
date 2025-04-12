@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Pulse Time</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .clock-container {
+            text-align: center;
+        }
+        .time-box {
+            margin: 15px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+            width: 300px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .time-label {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .time-value {
+            font-size: 1.5em;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="clock-container">
+        <h1>Dynamic Clock</h1>
+          <div class="time-box">
+            <div class="time-label">GPT Time</div>
+            <div id="gpt-time" class="time-value">P000000</div>
+        </div>
+         <div class="time-box">
+            <div class="time-label">Local Time</div>
+            <div id="local-time" class="time-value">--:--:--</div>
+        </div>
+        <div class="time-box">
+            <div class="time-label">UTC Time</div>
+            <div id="utc-time" class="time-value">--:--:--</div>
+        </div>
+       
+    </div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+
+            // UTC Time
+            const utcTime = now.toISOString().split('T')[1].split('.')[0];
+
+            // Local Time
+            const localTime = now.toLocaleTimeString();
+
+            // GPT Time Calculation
+            const totalSecondsInDay = 24 * 60 * 60; // 86400
+            const utcMidnight = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+            const secondsSinceMidnight = (now - utcMidnight) / 1000;
+            const gptPulse = Math.floor((secondsSinceMidnight / totalSecondsInDay) * 100000);
+            const gptTime = `P${gptPulse.toString().padStart(6, '0')}`;
+
+            // Update DOM
+            document.getElementById('utc-time').textContent = utcTime;
+            document.getElementById('local-time').textContent = localTime;
+            document.getElementById('gpt-time').textContent = gptTime;
+        }
+
+        // Update every second
+        setInterval(updateClock, 1000);
+
+        // Initialize the clock
+        updateClock();
+    </script>
+</body>
+</html>
