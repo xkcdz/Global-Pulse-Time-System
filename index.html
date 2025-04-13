@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Pulse Time</title>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Merriweather', serif;
+            font-size: 18px;
+            line-height: 26px;
+            background: #ffffff;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+
+        h1, h2 {
+            margin: 0;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            color: #000;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        /* GPT Time Box */
+        .time-box {
+            margin: 32px auto;
+            padding: 20px;
+            border-radius: 10px;
+            background: #f9f9f9;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 320px;
+            text-align: center;
+        }
+
+        .time-label {
+            font-size: 1.2em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .time-value {
+            font-size: 2.2em;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        /* City Times */
+        .city-time {
+            margin-top: 64px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .city-list {
+            margin-top: 32px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .city {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            width: 150px;
+        }
+
+        .city strong {
+            font-size: 1.1em;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .city span {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #000;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .time-box {
+                width: 90%;
+            }
+
+            .city-time {
+                width: 90%;
+            }
+
+            .city-list {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="clock-container">
+        <h1>Global Pulse Time</h1>
+        <div class="time-box">
+            <div class="time-label">GPT Time</div>
+            <div id="gpt-time" class="time-value">P000000</div>
+        </div>
+        <div class="city-time">
+            <h2>Current Time in Major Cities</h2>
+            <div class="city-list" id="city-times">
+                <div class="city">
+                    <strong>Tokyo</strong>
+                    <span id="tokyo-time">--:--:--</span>
+                </div>
+                <div class="city">
+                    <strong>Beijing</strong>
+                    <span id="beijing-time">--:--:--</span>
+                </div>
+                <div class="city">
+                    <strong>Paris</strong>
+                    <span id="paris-time">--:--:--</span>
+                </div>
+                <div class="city">
+                    <strong>London</strong>
+                    <span id="london-time">--:--:--</span>
+                </div>
+                <div class="city">
+                    <strong>New York</strong>
+                    <span id="newyork-time">--:--:--</span>
+                </div>
+                <div class="city">
+                    <strong>Los Angeles</strong>
+                    <span id="losangeles-time">--:--:--</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+
+            // Calculate GPT Time
+            const utcMidnight = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+            const secondsSinceMidnight = (now - utcMidnight) / 1000;
+            const totalSecondsInDay = 24 * 60 * 60; // 86400
+            const gptPulse = Math.floor((secondsSinceMidnight / totalSecondsInDay) * 100000);
+            const gptTime = `P${gptPulse.toString().padStart(6, '0')}`;
+            document.getElementById('gpt-time').textContent = gptTime;
+
+            // City Times
+            const cities = [
+                { id: 'tokyo-time', timeZone: 'Asia/Tokyo' },
+                { id: 'beijing-time', timeZone: 'Asia/Shanghai' },
+                { id: 'paris-time', timeZone: 'Europe/Paris' },
+                { id: 'london-time', timeZone: 'Europe/London' },
+                { id: 'newyork-time', timeZone: 'America/New_York' },
+                { id: 'losangeles-time', timeZone: 'America/Los_Angeles' }
+            ];
+
+            cities.forEach(city => {
+                const cityTime = new Intl.DateTimeFormat('en-US', {
+                    timeZone: city.timeZone,
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                }).format(now);
+                document.getElementById(city.id).textContent = cityTime;
+            });
+        }
+
+        // Update every second
+        setInterval(updateClock, 1000);
+
+        // Initialize the clock
+        updateClock();
+    </script>
+</body>
+</html>
